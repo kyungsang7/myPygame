@@ -87,6 +87,7 @@ while running:
         pygame.draw.rect(display, GREEN, brick)
     
     display.blit(score_text, (0, 0))
+    display.blit(life_text, (0, 40))
     pygame.display.flip()
 
     if len(bricks) == 0 or life == 0:
