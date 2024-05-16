@@ -2,21 +2,19 @@ import pygame
 
 pygame.init()
 
-#스크린 설정
+# 스크린 설정
 display_width = 1000
 display_height = 800
 display = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption("벽돌 깨기")
 
-# 색 
+# 색
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
-BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
-YELLOW = (255, 255, 0)
 
-#패들 크기, 속도
+# 패들 크기, 속도
 paddle_width = 150
 paddle_height = 15
 paddle_speed = 10
@@ -31,8 +29,10 @@ brick_width = 100
 brick_height = 20
 bricks = []
 
-paddle = pygame.Rect(400, 750, paddle_width, paddle_height) #
+#점수
+score = 0
 
+paddle = pygame.Rect(400, 750, paddle_width, paddle_height)
 ball = pygame.Rect(500, 700, ball_radius * 2, ball_radius * 2)
 
 for i in range(9):
@@ -40,8 +40,10 @@ for i in range(9):
         brick = pygame.Rect(j * (brick_width + 4) + 40, i * (brick_height + 4) + 25, brick_width, brick_height)
         bricks.append(brick)
 
-ball_dx = ball_speed_x 
-ball_dy = ball_speed_y 
+ball_dx = ball_speed_x
+ball_dy = ball_speed_y
+
+font = pygame.font.Font(None, 36)
 
 running = True
 while running:
@@ -66,16 +68,21 @@ while running:
     if ball.colliderect(paddle) and ball_dy > 0:
         ball_dy *= -1
 
-    for brick in bricks:
+    for brick in bricks:  
         if ball.colliderect(brick):
             bricks.remove(brick)
             ball_dy *= -1
+            score += 1
+
+    score_text = font.render("Score: " + str(score), True, BLACK)
 
     display.fill(WHITE)
     pygame.draw.rect(display, BLACK, paddle)
     pygame.draw.ellipse(display, RED, ball)
     for brick in bricks:
         pygame.draw.rect(display, GREEN, brick)
+    
+    display.blit(score_text, (10, 10))
     pygame.display.flip()
 
     if len(bricks) == 0:
