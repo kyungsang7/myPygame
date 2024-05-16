@@ -3,16 +3,18 @@ import pygame
 pygame.init()
 
 #스크린 설정
-screen_width = 1000
-screen_height = 800
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption("OSS 팀플 벽돌 깨기")
+display_width = 1000
+display_height = 800
+display = pygame.display.set_mode((display_width, display_height))
+pygame.display.set_caption("벽돌 깨기")
 
 # 색 
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
+YELLOW = (255, 255, 0)
 
 #패들 크기, 속도
 paddle_width = 150
@@ -27,15 +29,15 @@ ball_speed_y = 5
 # 벽돌 크기
 brick_width = 100
 brick_height = 20
-bricks = [ ]
+bricks = []
 
-paddle = pygame.Rect(400, 750, paddle_width, paddle_height) # 좌표 400, 750에 paddle_width, brick_height크기 사각형 생성
+paddle = pygame.Rect(400, 750, paddle_width, paddle_height) #
 
-ball = pygame.Rect(500, 700, ball_radius * 2, ball_radius * 2) # 좌표 500, 700에 가로길이 세로길이 ball_radius * 2인 사각형 생성
+ball = pygame.Rect(500, 700, ball_radius * 2, ball_radius * 2)
 
-for i in range(9): # 9 X 9 벽돌 생성
+for i in range(9):
     for j in range(9):
-        brick = pygame.Rect(j * (brick_width + 4) + 40, i * (brick_height + 4) + 25, brick_width, brick_height) #벽돌간 간격 4픽셀
+        brick = pygame.Rect(j * (brick_width + 4) + 40, i * (brick_height + 4) + 25, brick_width, brick_height)
         bricks.append(brick)
 
 ball_dx = ball_speed_x 
@@ -50,15 +52,35 @@ while running:
     keys = pygame.key.get_pressed()
     if keys[pygame.K_LEFT] and paddle.left > 0:
         paddle.x -= paddle_speed
-    if keys[pygame.K_RIGHT] and paddle.right < screen_width:
+    if keys[pygame.K_RIGHT] and paddle.right < display_width:
         paddle.x += paddle_speed
 
-    screen.fill(WHITE)
-    pygame.draw.rect(screen, BLACK, paddle)
-    pygame.draw.ellipse(screen, RED, ball)
+    ball.x += ball_dx
+    ball.y += ball_dy
+
+    if ball.top <= 0:
+        ball_dy *= -1
+    if ball.left <= 0 or ball.right >= display_width:
+        ball_dx *= -1
+
+    if ball.colliderect(paddle) and ball_dy > 0:
+        ball_dy *= -1
+
     for brick in bricks:
-        pygame.draw.rect(screen, GREEN, brick)
+        if ball.colliderect(brick):
+            bricks.remove(brick)
+            ball_dy *= -1
+
+    display.fill(WHITE)
+    pygame.draw.rect(display, BLACK, paddle)
+    pygame.draw.ellipse(display, RED, ball)
+    for brick in bricks:
+        pygame.draw.rect(display, GREEN, brick)
     pygame.display.flip()
 
+    if len(bricks) == 0:
+        running = False
+
     pygame.time.Clock().tick(60)
+
 pygame.quit()
