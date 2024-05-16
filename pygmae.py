@@ -32,6 +32,7 @@ bricks = []
 
 #점수
 score = 0
+life = 3
 
 paddle = pygame.Rect(400, 750, paddle_width, paddle_height)
 ball = pygame.Rect(500, 700, ball_radius * 2, ball_radius * 2)
@@ -72,6 +73,11 @@ while running:
             bricks.remove(brick)
             ball_dy *= -1
             score += 1
+    
+    if ball.top >= display_height:
+        life -= 1
+        ball.x = 500
+        ball.y = 500
 
     score_text = score_font.render("Score: " + str(score), 1, "black")
     display.fill(WHITE)
@@ -83,7 +89,7 @@ while running:
     display.blit(score_text, (0, 0))
     pygame.display.flip()
 
-    if len(bricks) == 0:
+    if len(bricks) == 0 or life == 0:
         running = False
 
     pygame.time.Clock().tick(60)
