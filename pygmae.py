@@ -7,6 +7,7 @@ display_width = 1000
 display_height = 800
 display = pygame.display.set_mode((display_width, display_height))
 pygame.display.set_caption("벽돌 깨기")
+score_font = pygame.font.SysFont("comicsans", 40)
 
 # 색
 WHITE = (255, 255, 255)
@@ -43,8 +44,6 @@ for i in range(9):
 ball_dx = ball_speed_x
 ball_dy = ball_speed_y
 
-font = pygame.font.Font(None, 36)
-
 running = True
 while running:
     for event in pygame.event.get():
@@ -74,15 +73,14 @@ while running:
             ball_dy *= -1
             score += 1
 
-    score_text = font.render("Score: " + str(score), True, BLACK)
-
+    score_text = score_font.render("Score: " + str(score), 1, "black")
     display.fill(WHITE)
     pygame.draw.rect(display, BLACK, paddle)
     pygame.draw.ellipse(display, RED, ball)
     for brick in bricks:
         pygame.draw.rect(display, GREEN, brick)
     
-    display.blit(score_text, (10, 10))
+    display.blit(score_text, (0, 0))
     pygame.display.flip()
 
     if len(bricks) == 0:
