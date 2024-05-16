@@ -1,1 +1,1 @@
-# myPygame
+# Block Breaker Pygame
